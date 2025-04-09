@@ -13,7 +13,7 @@ export interface IVehicle extends Document {
 }
 
 const VehicleSchema: Schema = new Schema({
-    plate: { type: String, required: false },
+    plate: { type: String, required: false, unique: true },
     type: { type: String, required: true, enum: Object.values(VehicleType) },
     owner: { type: String, required: true },
 });
