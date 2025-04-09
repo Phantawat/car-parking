@@ -1,38 +1,101 @@
-## Getting Started
+# 🚗 Car Parking Management System
 
-First, run the development server:
+A fun and user-friendly full-stack parking management system built with **Next.js**, **MongoDB**, and **Tailwind CSS**. This app supports:
 
+- 🎫 User vehicle registration and ticket generation
+- 🅿️ Parking spot selection and allocation
+- 🧾 Real-time ticket display and unpark cost calculation
+- 🖨️ Printable ticket summaries
+- 🛠️ Admin dashboard for managing lots, levels, and spots
+
+---
+
+## 📦 Features
+
+### 👤 Users
+- Add a new vehicle
+- Select a parking level and park
+- Get a digital ticket with parking details
+- Unpark to see total cost
+- Print or save ticket as PDF
+
+### 🧑‍💼 Admin
+- Manage Parking Lots and Levels
+- Generate spots for each level
+- Monitor all tickets via dashboard
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repo
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/cute-parking.git
+cd car-parking
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install Dependencies
+```bash
+npm install 
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### 3. Configure MongoDB
+Create a `.env.local` file:
+```
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/parking_db
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### 4. Run the Development Server
+```bash
+npm run dev
+```
+Visit `http://localhost:3000`
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📁 Project Structure
+```
+/pages
+  index.tsx               # Entry point
+  user.tsx                # User vehicle entry
+  findparkingspot.tsx     # Choose level and park
+  ticket/[ticketId].tsx   # View and print ticket
+  admin/                  # Admin dashboards
 
-## Learn More
+/pages/api
+  /user                   # Create ticket, unpark
+  /tickets                # Fetch ticket by ID
+  /admin                  # Admin tools (generate spots)
 
-To learn more about Next.js, take a look at the following resources:
+/models
+  Vehicle.ts
+  Ticket.ts
+  ParkingLot.ts
+  ParkingLevel.ts
+  ParkingSpot.ts
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧪 Example Flow
+1. User enters from home page → `/user`
+2. Creates vehicle → Redirect to `/findparkingspot`
+3. Selects level → Ticket generated → Redirects to `/ticket/[id]`
+4. Can unpark and print ticket
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📸 Screenshot
+> Include a cute screenshot here of the homepage or ticket page.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+---
+
+## 💖 Credits
+- Built with love by the Kasetsart University team 🇹🇭
+- Uses [Lucide Icons](https://lucide.dev/) and [Framer Motion](https://www.framer.com/motion/)
+
+---
+
+## 📃 License
+MIT License — Free to use and modify!
+

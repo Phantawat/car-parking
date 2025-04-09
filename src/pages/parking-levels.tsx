@@ -1,6 +1,6 @@
-// pages/parking-levels.tsx (cute version)
+// pages/parking-levels.tsx (enhanced with admin nav & auto spot gen)
 import React, { useState, useEffect } from 'react';
-import { Trash2, PlusCircle, Edit, ArrowLeft } from 'lucide-react';
+import { Trash2, PlusCircle, Edit, ArrowLeft, Ticket, Map, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -29,6 +29,7 @@ export default function ParkingLevelPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [spotCount, setSpotCount] = useState(10);
 
   useEffect(() => {
     if (lotId) {
@@ -92,6 +93,13 @@ export default function ParkingLevelPage() {
         setParkingLevels(parkingLevels.map(level => level._id === editingId ? savedParkingLevel : level));
       } else {
         setParkingLevels([...parkingLevels, savedParkingLevel]);
+
+        // Auto-generate spots after adding
+        await fetch('/api/admin/generate-spots', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ levelId: savedParkingLevel._id, count: spotCount })
+        });
       }
 
       setNewParkingLevel({ isOpen: true, parkingLotId: lotId as string });
@@ -144,6 +152,12 @@ export default function ParkingLevelPage() {
         />
         <h1 className="text-3xl font-bold text-yellow-700 drop-shadow-sm">Manage Parking Levels 🅿️✨</h1>
         <p className="text-gray-600">Keep each floor neat and ready!</p>
+
+        <div className="flex justify-center space-x-4 mt-4">
+          <Link href="/admin/generate-spots"><button className="bg-purple-200 hover:bg-purple-300 px-4 py-2 rounded-xl flex items-center text-purple-700"><Wrench className="mr-2" /> Generate Spots</button></Link>
+          <Link href="/admin/visualize-spots"><button className="bg-blue-200 hover:bg-blue-300 px-4 py-2 rounded-xl flex items-center text-blue-700"><Map className="mr-2" /> Visualize Spots</button></Link>
+          <Link href="/admin/tickets"><button className="bg-green-200 hover:bg-green-300 px-4 py-2 rounded-xl flex items-center text-green-700"><Ticket className="mr-2" /> Ticket Dashboard</button></Link>
+        </div>
       </div>
 
       <div className="bg-white shadow-xl rounded-3xl p-6 max-w-5xl mx-auto">
@@ -234,9 +248,35 @@ export default function ParkingLevelPage() {
                 {editingId ? 'Update' : 'Add'} Level
               </button>
             </div>
+            {isDialogOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-3xl shadow-2xl w-96 space-y-4">
+                  <h3 className="text-lg font-bold text-pink-600">
+                    {editingId ? 'Edit Level' : 'Add a New Level'}
+                  </h3>
+
+                  <input type="number" placeholder="Level Number" value={newParkingLevel.level || ''} onChange={e => setNewParkingLevel({ ...newParkingLevel, level: parseInt(e.target.value) })} className="w-full px-3 py-2 border rounded-lg" />
+                  <input type="text" placeholder="Name" value={newParkingLevel.name || ''} onChange={e => setNewParkingLevel({ ...newParkingLevel, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg" />
+                  <input type="number" placeholder="Capacity" value={newParkingLevel.capacity || ''} onChange={e => setNewParkingLevel({ ...newParkingLevel, capacity: parseInt(e.target.value) })} className="w-full px-3 py-2 border rounded-lg" />
+                  <input type="number" placeholder="Available Spaces" value={newParkingLevel.availableSpaces || ''} onChange={e => setNewParkingLevel({ ...newParkingLevel, availableSpaces: parseInt(e.target.value) })} className="w-full px-3 py-2 border rounded-lg" />
+                  <input type="number" placeholder="Spots to Generate" value={spotCount} onChange={e => setSpotCount(parseInt(e.target.value))} className="w-full px-3 py-2 border rounded-lg" />
+                  <div className="flex items-center">
+                    <input type="checkbox" id="isOpen" checked={newParkingLevel.isOpen || false} onChange={e => setNewParkingLevel({ ...newParkingLevel, isOpen: e.target.checked })} className="mr-2" />
+                    <label htmlFor="isOpen">Open for Parking</label>
+                  </div>
+                  <div className="flex justify-end space-x-2">
+                    <button onClick={() => { setIsDialogOpen(false); setEditingId(null); }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Cancel</button>
+                    <button onClick={handleSaveParkingLevel} disabled={!newParkingLevel.level || !newParkingLevel.name || !newParkingLevel.capacity || newParkingLevel.availableSpaces === undefined} className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:opacity-50">
+                      {editingId ? 'Update' : 'Add'} Level
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
     </div>
   );
 }
+    

@@ -29,15 +29,14 @@ export default function AdminTicketDashboard() {
             <tr>
               <th className="p-2 text-left">Lot</th>
               <th className="p-2 text-left">Level</th>
-              <th className="p-2 text-left">Spot</th>
-              <th className="p-2 text-left">Vehicle</th>
+              <th className="p-2 text-left">Ticket ID</th>
               <th className="p-2 text-left">Start Time</th>
               <th className="p-2 text-left">Price</th>
             </tr>
           </thead>
           <tbody>
             {tickets.map(t => (
-              <tr key={t._id} className="border-b hover:bg-yellow-50">
+              <tr key={t._id} className="border-b hover:bg-yellow-50 text-black transition">
                 <td className="p-2">{t.lotName}</td>
                 <td className="p-2">{t.level}</td>
                 <td className="p-2">{t.vehicleId}</td>
