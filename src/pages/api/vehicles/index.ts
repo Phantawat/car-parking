@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Vehicle, { IVehicle, VehicleType } from '@/models/Vehicle';
 import mongoose from 'mongoose';
-import dbConnect from '@/lib/mongodb';
+import MongoDB from '@/lib/mongodb';
 
 export const createVehicle = async (vehicleData: Partial<IVehicle>) => {
   // Validate required fields
@@ -95,7 +95,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Establish database connection
-    await dbConnect();
+    const dbConnect = MongoDB.getInstance();
+    await dbConnect.connect();
   } catch (connectionError) {
     // Check if res is defined before calling methods
     if (res) {

@@ -1,6 +1,6 @@
 // pages/api/parking-lots/index.ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '@/lib/mongodb';
+import MongoDB from '@/lib/mongodb';
 import ParkingLot from '@/models/ParkingLot';
 
 export default async function handler(
@@ -9,7 +9,8 @@ export default async function handler(
 ) {
   const { method } = req;
 
-  await dbConnect();
+  const dbConnect = MongoDB.getInstance();
+  await dbConnect.connect();
 
   switch (method) {
     // GET - Retrieve all parking lots

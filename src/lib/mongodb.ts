@@ -1,22 +1,36 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI as string;
+class MongoDB {
+  private static instance: MongoDB;
+  private conn: typeof mongoose | null = null;
+  private promise: Promise<typeof mongoose> | null = null;
+  private readonly uri: string;
 
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable.");
-}
+  private constructor() {
+    this.uri = process.env.MONGODB_URI as string;
 
-let cached = (global as any).mongoose || { conn: null, promise: null };
-
-async function dbConnect() {
-  if (cached.conn) return cached.conn;
-
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => mongoose);
+    if (!this.uri) {
+      throw new Error("Please define the MONGODB_URI environment variable.");
+    }
   }
 
-  cached.conn = await cached.promise;
-  return cached.conn;
+  public static getInstance(): MongoDB {
+    if (!MongoDB.instance) {
+      MongoDB.instance = new MongoDB();
+    }
+    return MongoDB.instance;
+  }
+
+  public async connect(): Promise<typeof mongoose> {
+    if (this.conn) return this.conn;
+
+    if (!this.promise) {
+      this.promise = mongoose.connect(this.uri).then((mongoose) => mongoose);
+    }
+
+    this.conn = await this.promise;
+    return this.conn;
+  }
 }
 
-export default dbConnect;
+export default MongoDB;

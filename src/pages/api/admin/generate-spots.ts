@@ -1,13 +1,14 @@
 // /pages/api/admin/generate-spots.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '@/lib/mongodb';
+import MongoDB from '@/lib/mongodb';
 import ParkingLevel from '@/models/ParkingLevel';
 import ParkingSpot from '@/models/ParkingSpot';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  await dbConnect();
+  const dbConnect = MongoDB.getInstance();
+  await dbConnect.connect();
 
   const { levelId } = req.body;
   if (!levelId) return res.status(400).json({ error: 'Missing levelId' });

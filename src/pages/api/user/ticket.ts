@@ -1,6 +1,6 @@
 // /pages/api/user/ticket.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '@/lib/mongodb';
+import MongoDB from '@/lib/mongodb';
 import Ticket from '@/models/Ticket';
 import ParkingLevel from '@/models/ParkingLevel';
 import ParkingLot from '@/models/ParkingLot';
@@ -9,8 +9,9 @@ import Vehicle from '@/models/Vehicle';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end();
-  await dbConnect();
 
+  const dbConnect = MongoDB.getInstance();
+  await dbConnect.connect();
   const { plate, owner, type, levelId, vehicleId } = req.body;
 
   if (!levelId) return res.status(400).json({ error: 'Missing levelId' });

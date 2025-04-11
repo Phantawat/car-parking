@@ -1,6 +1,6 @@
 // pages/api/parking-lots/[id].ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '@/lib/mongodb';
+import MongoDB from '@/lib/mongodb';
 import ParkingLot from '@/models/ParkingLot';
 import mongoose from 'mongoose';
 
@@ -11,7 +11,8 @@ export default async function handler(
   const { method, query } = req;
   const id = query.id as string;
 
-  await dbConnect();
+  const dbConnect = MongoDB.getInstance();
+  await dbConnect.connect();
 
   // Validate ID format
   if (!mongoose.Types.ObjectId.isValid(id)) {

@@ -1,6 +1,6 @@
 // pages/api/parking-levels/index.ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '@/lib/mongodb';
+import MongoDB from '@/lib/mongodb';
 import ParkingLevel from '@/models/ParkingLevel';
 import mongoose from 'mongoose';
 
@@ -11,7 +11,8 @@ export default async function handler(
   const { method, query } = req;
   const parkingLotId = query.parkingLotId as string;
 
-  await dbConnect();
+  const dbConnect = MongoDB.getInstance();
+  await dbConnect.connect();
 
   switch (method) {
     // GET - Retrieve all parking levels, optionally filtered by parking lot
